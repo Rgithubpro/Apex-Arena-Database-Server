@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: apex-arena-middleware
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: TURSO_DATABASE_URL
+        sync: false
+      - key: TURSO_AUTH_TOKEN
+        sync: false
+      - key: CLIENT_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: FLUSH_INTERVAL_MS
+        value: "300000"
+      - key: GENERAL_DATA_REFRESH_MS
+        value: "60000"
+      - key: NODE_ENV
+        value: production
