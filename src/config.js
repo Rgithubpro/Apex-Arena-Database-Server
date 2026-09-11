@@ -12,6 +12,10 @@ export const config = {
   tursoUrl: required('TURSO_DATABASE_URL'),
   tursoAuthToken: required('TURSO_AUTH_TOKEN'),
   clientApiKey: required('CLIENT_API_KEY'),
+  // Optional: a second, more-secret key for dangerous actions (deletes,
+  // wiping data). Falls back to undefined if not set - adminKey-gated
+  // routes will then always reject, which is the safe default.
+  adminApiKey: process.env.ADMIN_API_KEY || undefined,
   port: parseInt(process.env.PORT || '3000', 10),
   flushIntervalMs: parseInt(process.env.FLUSH_INTERVAL_MS || '300000', 10),
   generalDataRefreshMs: parseInt(process.env.GENERAL_DATA_REFRESH_MS || '60000', 10),

@@ -25,11 +25,16 @@
  *               where the client just wants to send an arbitrary JSON blob
  *               (like logs) without knowing internal column names.
  * - actions: which operations are exposed, and what each requires.
- *     read:   { auth: 'public' | 'apiKey' }
- *     write:  { auth: 'public' | 'apiKey' }   // upsert - insert or overwrite
- *     delete: { auth: 'public' | 'apiKey' }
- *   Omit an action entirely to disable it for that table (e.g. logs has no
- *   `read` — nobody reads logs through the client API).
+ *     read:   { auth: 'public' | 'apiKey' | 'adminKey' | 'disabled' }
+ *     write:  { auth: 'public' | 'apiKey' | 'adminKey' | 'disabled' }   // upsert - insert or overwrite
+ *     delete: { auth: 'public' | 'apiKey' | 'adminKey' | 'disabled' }
+ *   Omit an action entirely to disable it for that table (same effect as
+ *   `disabled`, but `disabled` is more explicit/self-documenting if you
+ *   want it to show up clearly in this file).
+ *   'apiKey' = the shared CLIENT_API_KEY (x-api-key header).
+ *   'adminKey' = a separate, more-secret ADMIN_API_KEY (x-admin-key header) -
+ *                use this for dangerous actions like delete. If ADMIN_API_KEY
+ *                isn't set on the server, adminKey-gated actions always reject.
  */
 
 export const tablesConfig = {
@@ -41,8 +46,8 @@ export const tablesConfig = {
     batched: false,
     actions: {
       read: { auth: 'public' },
-      write: { auth: 'apiKey' },
-      delete: { auth: 'apiKey' },
+      write: { auth: 'disabled' },
+      delete: { auth: 'disabled' }, // dangerous - separate admin key required
     },
   },
 
@@ -56,6 +61,7 @@ export const tablesConfig = {
     actions: {
       // No `read` - logs are not fetchable through the client API on purpose.
       write: { auth: 'public' },
+      read: { auth: 'adminKey' },
       // No `delete` - logs are append-only from the client's perspective.
     },
   },

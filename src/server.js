@@ -3,7 +3,7 @@ import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
 
 import { config } from './config.js';
-import { requireApiKey } from './auth.js';
+import { requireApiKey, requireAdminKey, authHandlerFor } from './auth.js';
 import { tablesConfig, getTableConfig } from './tables.config.js';
 import {
   loadAllCaches,
@@ -97,7 +97,7 @@ function tableGuard(actionName) {
     }
 
     const action = tableCfg.actions[actionName];
-    if (!action) {
+    if (!action || action.auth === 'disabled') {
       reply.code(405).send({
         error: 'action_not_allowed',
         message: `"${actionName}" is not enabled for table "${table}"`,
@@ -107,12 +107,7 @@ function tableGuard(actionName) {
 
     request.tableCfg = tableCfg;
 
-    if (action.auth === 'apiKey') {
-      requireApiKey(request, reply, done);
-      return;
-    }
-
-    done();
+    authHandlerFor(action.auth)(request, reply, done);
   };
 }
 
