@@ -32,6 +32,7 @@ new table means editing that file, not writing new routes.
 
 | Method | Path                        | Notes                                                        |
 |--------|-----------------------------|---------------------------------------------------------------|
+| GET    | `/ping`                     | Simple online check; returns `{ "status": "ok" }`.          |
 | GET    | `/health`                   | Uptime, per-table cache status, pending write counts          |
 | GET    | `/data/:table/:key`         | Single row by the table's `keyColumn`. Auth per table config. |
 | GET    | `/data/:table`              | List rows. Query params filter by column; `?limit=N` caps page size (max 500). |

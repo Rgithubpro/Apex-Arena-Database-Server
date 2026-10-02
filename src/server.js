@@ -115,6 +115,8 @@ function tableGuard(actionName) {
 // Health check (unauthenticated, unlimited - Render + you both need this)
 // ---------------------------------------------------------------------------
 
+fastify.get('/ping', { config: { rateLimit: false } }, async () => ({ status: 'ok' }));
+
 fastify.get('/health', { config: { rateLimit: false } }, async () => {
   const cacheStatus = {};
   for (const tableName of Object.keys(tablesConfig)) {
